@@ -1,6 +1,8 @@
 #ifndef JIMAGE_H
 #define JIMAGE_H
 
+#define PI 3.1415926
+
 #include <QImage>
 
 class JImage
@@ -8,11 +10,13 @@ class JImage
 public:
     JImage();
     void ChangeQuality(int quality);
-    void ChangeConst();
+    void ChangeConst(bool constant);
     void ChangeImage(QImage origin);
+    void UpdateImage();
     
+
     QImage origin;
-    QImage Y,U,V;
+    QImage Y,CB,CR;
     QImage DCT_Y,DCT_U,DCT_V;
     QImage Quan_Y,Quan_U,Quan_V;
     QImage DQY,DQU,DQV;
@@ -22,14 +26,17 @@ public:
 private:
     int quality;
     bool constant;
-    
-    int Subsample(int a[2][2]);
+    bool flag;
+    static const int* DCT_Matrix[64] = Calculate_DCT_Matrix();
+
+    static int* Calculate_DCT_Matrix();
+    int Subsample(int a[4]);
     void LoopSubsample(QImage image);
     void DCT(QImage image, QImage &target);
     void Quantize(QImage image, QImage &target);
     void DQuantize(QImage image, QImage &target);
     void DDCT(QImage image, QImage &target);
-    void Decode(QImage image, QImage &target);
+    void Decode();
 };
 
 #endif // JIMAGE_H
