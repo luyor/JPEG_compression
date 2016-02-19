@@ -21,9 +21,11 @@ void MainWindow::on_pushButton_clicked()
       tr("Open Image"), "/home/jana", tr("Image Files (*.png *.jpg *.bmp)"));
     QImage image;
     if (!image.load(fileName)) QDialog::tr("cannot read image file");
-    QTextStream(stdout) <<fileName<<endl;
+    //QTextStream(stdout) <<fileName<<endl;
+    jimage.ChangeImage(image);
+    jimage.UpdateImage();
     
     QLabel *gv=findChild<QLabel *>("origin");
-    gv->setPixmap(QPixmap::fromImage(image));
+    gv->setPixmap(QPixmap::fromImage(jimage.DCT_Y));
 }
 

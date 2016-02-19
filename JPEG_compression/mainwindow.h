@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <jimage.h>
 
 namespace Ui {
 class MainWindow;
@@ -24,6 +25,7 @@ private slots:
     
 private:
     Ui::MainWindow *ui;
+    JImage jimage;
 };
 
 #endif // MAINWINDOW_H

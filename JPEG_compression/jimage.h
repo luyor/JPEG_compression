@@ -4,6 +4,7 @@
 #define PI 3.1415926
 
 #include <QImage>
+#include <math.h>
 
 class JImage
 {
@@ -27,9 +28,7 @@ private:
     int quality;
     bool constant;
     bool flag;
-    static const int* DCT_Matrix[64] = Calculate_DCT_Matrix();
-
-    static int* Calculate_DCT_Matrix();
+    
     int Subsample(int a[4]);
     void LoopSubsample(QImage image);
     void DCT(QImage image, QImage &target);

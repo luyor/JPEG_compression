@@ -45,7 +45,7 @@ JImage::JImage()
     this->flag =0;
 }
 
-void JImage::ChangeConst(int quality)
+void JImage::ChangeQuality(int quality)
 {
     this->quality = quality;
 }
@@ -67,10 +67,10 @@ void JImage::UpdateImage()
     {
         LoopSubsample(this->origin);
         DCT(Y,DCT_Y);
-        DCT(U,DCT_U);
-        DCT(V,DCT_V);
+        DCT(CB,DCT_U);
+        DCT(CR,DCT_V);
     }
-
+    
     Quantize(DCT_Y,Quan_Y);
     Quantize(DCT_U,Quan_U);
     Quantize(DCT_V,Quan_V);
@@ -92,30 +92,30 @@ int JImage::Subsample(int a[4])
     return int((a[0]+a[1]+a[2]+a[3])/4);
 }
 
-int JImage::LoopSubsample(QImage image)
+void JImage::LoopSubsample(QImage image)
 {
     int o_width = image.width();
     int o_height = image.height();
     int R,G,B;
     int ydata,cbdata[4],crdata[4];
 
-    this->Y = QImage( o_width, o_height, 3);
-    this->CB = QImage( ceil(o_width/2), ceil(o_height/2), 3);
-    this->CR = QImage( ceil(o_width/2), ceil(o_height/2), 3);
+    this->Y = QImage( o_width, o_height, QImage::Format_RGB32);
+    this->CB = QImage( ceil(o_width/2), ceil(o_height/2), QImage::Format_RGB32);
+    this->CR = QImage( ceil(o_width/2), ceil(o_height/2), QImage::Format_RGB32);
 
     QRgb temp;
     int average;
 
-    for(int i = 0; i< o_width; i=i+2 )
+    for(int i = 0; i< o_width-2; i=i+2 )
     {
-        for(int j = 0; j< o_height/2;j=j+2)
+        for(int j = 0; j< o_height-2;j=j+2)
         {
             for(int x= 0; x<2;x++)
             {
                 for(int y =0;y<2;y++){
                     R= qRed(image.pixel(i+x,j+y));
-                    G = qRed(image.pixel(i+x,j+y));
-                    B = qRed(image.pixel(i+x,j+y));
+                    G = qGreen(image.pixel(i+x,j+y));
+                    B = qBlue(image.pixel(i+x,j+y));
 
                     ydata = (int)(0.299f * R + 0.587f * G + 0.114f * B);
                     cbdata[x+2*y] = (int)(-0.1687f * R - 0.3313f * G + 0.5f * B + 128);
@@ -140,11 +140,13 @@ void JImage::DCT(QImage image, QImage &target)
 {
     int o_width = image.width();
     int o_height = image.height();
+    target = QImage( o_width, o_height, QImage::Format_RGB32);
+    
     QRgb colortemp;
 
-    for(int i = 0; i< o_width; i=i+8 )
+    for(int i = 0; i< o_width-8; i=i+8 )
     {
-        for(int j = 0; j< o_height/8;j=j+8)
+        for(int j = 0; j< o_height-8;j=j+8)
         {
             for(int v=0; v<8; v++)
                 {
@@ -182,9 +184,12 @@ void JImage::Quantize(QImage image, QImage &target)
 {
 
 }
-void JImage::DQuantize(QImage image, QImage &target);
-void JImage::DDCT(QImage image, QImage &target);
-void JImage::Decode();
+void JImage::DQuantize(QImage image, QImage &target)
+{}
+void JImage::DDCT(QImage image, QImage &target)
+{}
+void JImage::Decode()
+{}
 
 
 
