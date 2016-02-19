@@ -6,7 +6,7 @@
 class JImage
 {
 public:
-    JImage(QImage origin);
+    JImage();
     void ChangeQuality(int quality);
     void ChangeConst();
     void ChangeImage(QImage origin);
