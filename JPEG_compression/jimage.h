@@ -6,11 +6,11 @@
 class JImage
 {
 public:
-    JImage(QImage origin,int quality);
-    void Show();
+    JImage(QImage origin);
+    void ChangeQuality(int quality);
+    void ChangeConst();
+    void ChangeImage(QImage origin);
     
-private:
-    int quality;
     QImage origin;
     QImage Y,U,V;
     QImage DCT_Y,DCT_U,DCT_V;
@@ -18,6 +18,10 @@ private:
     QImage DQY,DQU,DQV;
     QImage DDCTY,DDCTU,DDCTV;
     QImage decoded;
+    
+private:
+    int quality;
+    bool constant;
     
     int Subsample(int a[2][2]);
     void LoopSubsample(QImage image);
