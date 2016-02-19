@@ -28,7 +28,7 @@
       <widget class="QFrame" name="">
        <property name="minimumSize">
         <size>
-         <width>100</width>
+         <width>300</width>
          <height>50</height>
         </size>
        </property>
@@ -98,6 +98,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
         <item>
          <widget class="QLabel" name="origin">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="frameShape">
            <enum>QFrame::Panel</enum>
           </property>
