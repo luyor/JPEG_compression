@@ -6,41 +6,47 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>817</width>
-    <height>540</height>
+    <width>783</width>
+    <height>689</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>40</x>
       <y>20</y>
-      <width>731</width>
-      <height>301</height>
+      <width>702</width>
+      <height>641</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QFrame" name="">
+      <widget class="QFrame" name="frame">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
-         <width>300</width>
+         <width>700</width>
          <height>50</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>300</width>
+         <width>700</width>
          <height>50</height>
         </size>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="open_btn">
           <property name="text">
            <string>open</string>
           </property>
@@ -84,22 +90,62 @@
           </item>
          </layout>
         </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <widget class="QRadioButton" name="nonuniform">
+            <property name="text">
+             <string>non-uniform</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="constant">
+            <property name="text">
+             <string>constant</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="submit_btn">
+          <property name="text">
+           <string>submit</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
      <item>
-      <widget class="QFrame" name="">
+      <widget class="QFrame" name="frame">
        <property name="minimumSize">
         <size>
          <width>300</width>
          <height>100</height>
         </size>
        </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
        <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
         <item>
          <widget class="QLabel" name="origin">
           <property name="enabled">
            <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>320</width>
+            <height>240</height>
+           </size>
           </property>
           <property name="frameShape">
            <enum>QFrame::Panel</enum>
@@ -123,12 +169,35 @@
         </item>
         <item>
          <widget class="QLabel" name="decoded">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>320</width>
+            <height>240</height>
+           </size>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Panel</enum>
+          </property>
+          <property name="lineWidth">
+           <number>3</number>
+          </property>
           <property name="text">
            <string/>
           </property>
          </widget>
         </item>
        </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="horizontalFrame">
+       <layout class="QHBoxLayout" name="horizontalLayout_4"/>
       </widget>
      </item>
     </layout>

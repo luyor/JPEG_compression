@@ -15,7 +15,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_open_btn_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
       tr("Open Image"), "/home/jana", tr("Image Files (*.png *.jpg *.bmp)"));
@@ -29,3 +29,22 @@ void MainWindow::on_pushButton_clicked()
     gv->setPixmap(QPixmap::fromImage(jimage.DCT_Y));
 }
 
+void MainWindow::on_nonuniform_clicked()
+{
+    
+}
+
+void MainWindow::on_submit_btn_clicked()
+{
+    
+}
+
+void MainWindow::on_spinBox_editingFinished()
+{
+    
+}
+
+void MainWindow::on_constant_clicked()
+{
+    
+}

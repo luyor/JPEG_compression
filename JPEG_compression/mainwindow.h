@@ -17,7 +17,16 @@ public:
     ~MainWindow();
     
 private slots:
-    void on_pushButton_clicked();
+    void on_open_btn_clicked();
+    
+    void on_spinBox_editingFinished();
+    
+    void on_nonuniform_clicked();
+    
+    void on_constant_clicked();
+    
+    void on_submit_btn_clicked();
+    
 private:
     Ui::MainWindow *ui;
     JImage jimage;
