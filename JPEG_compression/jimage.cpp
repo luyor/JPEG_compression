@@ -37,8 +37,8 @@ JImage::JImage()
     this->DCT_Matrix_Tran = new float[64];
     Calculate_DCT_Matrix(this->DCT_Matrix);
     Calculate_DCT_Matrix_Tran(this->DCT_Matrix,this->DCT_Matrix_Tran);
-    cout << DCT_Matrix[11] << " " << DCT_Matrix[21] << endl;
-    cout << DCT_Matrix_Tran[25] << " " << DCT_Matrix_Tran[42] << endl;
+    //cout << DCT_Matrix[11] << " " << DCT_Matrix[21] << endl;
+    //cout << DCT_Matrix_Tran[25] << " " << DCT_Matrix_Tran[42] << endl;
 }
 
 void JImage::Calculate_DCT_Matrix(float matrix[64])
@@ -47,7 +47,7 @@ void JImage::Calculate_DCT_Matrix(float matrix[64])
     {
         for(int j = 0; j<8;j++)
         {
-            matrix[8*j+i] = (i==0) ? 1/sqrt(8) : 0.5*cos((2*j+1)*i*PI/16);
+            matrix[8*i+j] = (i==0) ? 1/sqrt(8) : 0.5*cos((2*j+1)*i*PI/16);
         }
     }
     cout << matrix[0] << " " << matrix[63] << endl;
@@ -71,10 +71,10 @@ void JImage::Matrix_Multiply(float matrix1[64], float matrix2[64], float result[
     {
         for(int j = 0; j<8;j++)
         {
-            result[8*j+i] = 0;
+            result[8*i+j] = 0;
             for(int k =0; k<8;k++)
             {
-                result[8*j+i] += matrix1[i*8+k]* matrix2[k*8+j];
+                result[8*i+j] += matrix1[i*8+k]* matrix2[k*8+j];
             }
         }
     }
@@ -103,10 +103,10 @@ void JImage::UpdateImage()
     {
         LoopSubsample(this->origin);
         DCT(Y,DCT_Y);
-        DCT(CB,DCT_U);
-        DCT(CR,DCT_V);
+        //DCT(CB,DCT_U);
+        //DCT(CR,DCT_V);
     }
-    
+    /*
     Quantize_Y(DCT_Y,Quan_Y);
     Quantize_CBCR(DCT_U,Quan_U);
     Quantize_CBCR(DCT_V,Quan_V);
@@ -114,12 +114,12 @@ void JImage::UpdateImage()
     DQuantize_Y(Quan_Y,DQY);
     DQuantize_CBCR(Quan_U,DQU);
     DQuantize_CBCR(Quan_V,DQV);
+*/
+    DDCT(DCT_Y,DDCTY);
+    //DDCT(DQU,DDCTU);
+    //DDCT(DQV,DDCTV);
 
-    DDCT(DQY,DDCTY);
-    DDCT(DQU,DDCTU);
-    DDCT(DQV,DDCTV);
-
-    Decode();
+    //Decode();
 
 }
 
@@ -132,8 +132,19 @@ void JImage::LoopSubsample(QImage image)
 {
     int o_width = image.width();
     int o_height = image.height();
+    if(store_Matrix_Y != NULL ){
+        delete store_Matrix_Y;
+        delete store_Matrix_Cb;
+        delete store_Matrix_Cr;
+        
+    }
+    
     o_width  -= o_width % 16;
     o_height -= o_height % 16;
+    int *store_Matrix_Y = new int[o_width][o_height];
+    int *store_Matrix_Cb = new int[o_width/2][o_height/2];
+    int *store_Matrix_Cr = new int[o_width/2][o_height/2];
+    
     int R,G,B;
     int ydata,cbdata[4],crdata[4];
 
@@ -161,6 +172,7 @@ void JImage::LoopSubsample(QImage image)
 
                     temp = qRgb(ydata,ydata,ydata);
                     Y.setPixel(i+x,j+y,temp);
+                    store_Matrix_Y[]
                 }
             }
 
@@ -187,9 +199,9 @@ void JImage::DCT(QImage image, QImage &target)
     {
         for(int j = 0; j< o_height;j=j+8)
         {
-            /*float *first = new float[64];
+            float first[64];
             float f_matrix[64];
-            float *final = new float[64];
+            float final[64];
             for(int x=0; x<8 ;x++)
             {
                 for(int y=0;y<8;y++)
@@ -199,6 +211,9 @@ void JImage::DCT(QImage image, QImage &target)
             }
             Matrix_Multiply(this->DCT_Matrix,f_matrix,first);
             Matrix_Multiply(first,this->DCT_Matrix_Tran,final);
+            
+            //Matrix_Multiply(this->DCT_Matrix_Tran,final,first);
+            //Matrix_Multiply(first,this->DCT_Matrix,final);
 
             for(int x=0; x<8 ;x++)
             {
@@ -208,33 +223,7 @@ void JImage::DCT(QImage image, QImage &target)
                     colortemp = qRgb(value,value,value);
                     target.setPixel(i+x,j+y,colortemp);
                 }
-            }*/
-            for(int v=0; v<8; v++)
-            {
-                for(int u=0; u<8; u++)
-                {
-                    float alpha_u = (u==0) ? 1/sqrt(8.0f) : 0.5f;
-                    float alpha_v = (v==0) ? 1/sqrt(8.0f) : 0.5f;
-
-                    float temp = 0.f;
-                    for(int x=0; x<8; x++)
-                    {
-                        for(int y=0; y<8; y++)
-                        {
-                            float data = qRed(image.pixel(i+x,j+y));
-
-                            data *= cos((2*x+1)*u*PI/16.0f);
-                            data *= cos((2*y+1)*v*PI/16.0f);
-
-                            temp += data;
-                        }
-                    }
-
-                    temp *= alpha_u*alpha_v;
-                    colortemp = qRgb(int(temp),int(temp),int(temp));
-                    target.setPixel(i+v,j+u,colortemp);
-                 }
-             }
+            }
         }
     }
 }
@@ -334,9 +323,9 @@ void JImage::DDCT(QImage image, QImage &target)
     {
         for(int j = 0; j< o_height;j=j+8)
         {
-            /*float *first = new float[64];
+            float first[64];
             float f_matrix[64];
-            float *final = new float[64];
+            float final[64];
             for(int x=0; x<8 ;x++)
             {
                 for(int y=0;y<8;y++)
@@ -355,35 +344,7 @@ void JImage::DDCT(QImage image, QImage &target)
                     colortemp = qRgb(value,value,value);
                     target.setPixel(i+x,j+y,colortemp);
                 }
-            }*/
-            for(int x=0; x<8; x++)
-            {
-                for(int y=0; y<8; y++)
-                {
-
-                    float temp = 0.f;
-                    for(int u=0; u<8; u++)
-                    {
-                        for(int v=0; v<8; v++)
-                        {
-                            float alpha_u = (u==0) ? 1/sqrt(8.0f) : 0.5f;
-                            float alpha_v = (v==0) ? 1/sqrt(8.0f) : 0.5f;
-
-                            float data = qRed(image.pixel(i+u,j+v));
-
-                            data *= cos((2*x+1)*u*PI/16.0f);
-                            data *= cos((2*y+1)*v*PI/16.0f);
-                            data *= alpha_u*alpha_v;
-                            temp += data;
-
-                        }
-                    }
-
-
-                    colortemp = qRgb(int(temp),int(temp),int(temp));
-                    target.setPixel(i+x,j+y,colortemp);
-                 }
-             }
+            }
         }
     }
 

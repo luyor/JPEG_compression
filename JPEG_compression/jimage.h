@@ -31,6 +31,7 @@ private:
     bool flag;
     float *DCT_Matrix;
     float *DCT_Matrix_Tran;
+    int *store_Matrix;
     
     void Calculate_DCT_Matrix(float matrix[64]);
     void Calculate_DCT_Matrix_Tran(float matrix[64],float result[64]);
@@ -44,6 +45,7 @@ private:
     void DQuantize_CBCR(QImage image, QImage &target);
     void DDCT(QImage image, QImage &target);
     void Decode();
+    
 };
 
 #endif // JIMAGE_H
