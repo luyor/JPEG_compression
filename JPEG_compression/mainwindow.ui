@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>809</width>
-    <height>690</height>
+    <width>763</width>
+    <height>687</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <rect>
       <x>40</x>
       <y>20</y>
-      <width>741</width>
+      <width>691</width>
       <height>631</height>
      </rect>
     </property>
@@ -86,6 +86,15 @@
             <property name="suffix">
              <string/>
             </property>
+            <property name="minimum">
+             <number>0</number>
+            </property>
+            <property name="maximum">
+             <number>200</number>
+            </property>
+            <property name="value">
+             <number>100</number>
+            </property>
            </widget>
           </item>
          </layout>
@@ -96,6 +105,9 @@
            <widget class="QRadioButton" name="nonuniform">
             <property name="text">
              <string>non-uniform</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
