@@ -77,8 +77,6 @@ void JImage::Calculate_DCT_Matrix(float matrix[64])
             matrix[8*i+j] = (i==0) ? 1/sqrt(8) : 0.5*cos((2*j+1)*i*PI/16);
         }
     }
-
-
 }
 
 void JImage::Calculate_DCT_Matrix_Tran(float matrix[64],float result[64])
@@ -171,7 +169,6 @@ void JImage::LoopSubsample(QImage image)
     store_Matrix_Y = new int[o_width*o_height+10];
     store_Matrix_Cb = new int[o_width*o_height/4+10];
     store_Matrix_Cr = new int[o_width*o_height/4+10];
-    cout<<"kk"<<endl;
     
     int R,G,B;
     int ydata,cbdata[4],crdata[4];
