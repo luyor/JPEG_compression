@@ -40,6 +40,9 @@ private slots:
 private:
     Ui::MainWindow *ui;
     JImage jimage;
+    int YUV_num=0;
+    
+    void UpdateYUV();
 };
 
 #endif // MAINWINDOW_H
