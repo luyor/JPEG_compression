@@ -31,19 +31,21 @@ private:
     bool flag;
     float *DCT_Matrix;
     float *DCT_Matrix_Tran;
-    int *store_Matrix;
+    int *store_Matrix_Y;
+    int *store_Matrix_Cb;
+    int *store_Matrix_Cr;
     
     void Calculate_DCT_Matrix(float matrix[64]);
     void Calculate_DCT_Matrix_Tran(float matrix[64],float result[64]);
     void Matrix_Multiply(float matrix1[64], float matrix2[64], float result[64]);
     int Subsample(int a[4]);
     void LoopSubsample(QImage image);
-    void DCT(QImage image, QImage &target);
-    void Quantize_Y(QImage image, QImage &target);
-    void Quantize_CBCR(QImage image, QImage &target);
-    void DQuantize_Y(QImage image, QImage &target);
-    void DQuantize_CBCR(QImage image, QImage &target);
-    void DDCT(QImage image, QImage &target);
+    void DCT(QImage image, QImage &target,int store_matrix[]);
+    void Quantize_Y(QImage image, QImage &target,int store_matrix[]);
+    void Quantize_CBCR(QImage image, QImage &target,int store_matrix[]);
+    void DQuantize_Y(QImage image, QImage &target,int store_matrix[]);
+    void DQuantize_CBCR(QImage image, QImage &target,int store_matrix[]);
+    void DDCT(QImage image, QImage &target,int store_matrix[]);
     void Decode();
     
 };
