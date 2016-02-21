@@ -39,6 +39,9 @@ JImage::JImage()
     Calculate_DCT_Matrix_Tran(this->DCT_Matrix,this->DCT_Matrix_Tran);
     //cout << DCT_Matrix[11] << " " << DCT_Matrix[21] << endl;
     //cout << DCT_Matrix_Tran[25] << " " << DCT_Matrix_Tran[42] << endl;
+    this->store_Matrix_Y = NULL;
+    this->store_Matrix_Cb = NULL;
+    this->store_Matrix_Cr = NULL;
 }
 
 void JImage::Calculate_DCT_Matrix(float matrix[64])
@@ -102,24 +105,24 @@ void JImage::UpdateImage()
     if(this->flag == 0)
     {
         LoopSubsample(this->origin);
-        DCT(Y,DCT_Y);
-        //DCT(CB,DCT_U);
-        //DCT(CR,DCT_V);
+        DCT(Y,DCT_Y,store_Matrix_Y);
+        DCT(CB,DCT_U,store_Matrix_Cb);
+        DCT(CR,DCT_V,store_Matrix_Cr);
     }
-    /*
-    Quantize_Y(DCT_Y,Quan_Y);
-    Quantize_CBCR(DCT_U,Quan_U);
-    Quantize_CBCR(DCT_V,Quan_V);
 
-    DQuantize_Y(Quan_Y,DQY);
-    DQuantize_CBCR(Quan_U,DQU);
-    DQuantize_CBCR(Quan_V,DQV);
-*/
-    DDCT(DCT_Y,DDCTY);
-    //DDCT(DQU,DDCTU);
-    //DDCT(DQV,DDCTV);
+    Quantize_Y(DCT_Y,Quan_Y,store_Matrix_Y);
+    Quantize_CBCR(DCT_U,Quan_U,store_Matrix_Cb);
+    Quantize_CBCR(DCT_V,Quan_V,store_Matrix_Cr);
 
-    //Decode();
+    DQuantize_Y(Quan_Y,DQY,store_Matrix_Y);
+    DQuantize_CBCR(Quan_U,DQU,store_Matrix_Cb);
+    DQuantize_CBCR(Quan_V,DQV,store_Matrix_Cr);
+
+    DDCT(DCT_Y,DDCTY,store_Matrix_Y);
+    DDCT(DQU,DDCTU,store_Matrix_Cb);
+    DDCT(DQV,DDCTV,store_Matrix_Cr);
+
+    Decode();
 
 }
 
@@ -133,17 +136,17 @@ void JImage::LoopSubsample(QImage image)
     int o_width = image.width();
     int o_height = image.height();
     if(store_Matrix_Y != NULL ){
-        delete store_Matrix_Y;
-        delete store_Matrix_Cb;
-        delete store_Matrix_Cr;
-        
+        delete[] store_Matrix_Y;
+        delete[] store_Matrix_Cb;
+        delete[] store_Matrix_Cr;
     }
     
     o_width  -= o_width % 16;
     o_height -= o_height % 16;
-    int *store_Matrix_Y = new int[o_width][o_height];
-    int *store_Matrix_Cb = new int[o_width/2][o_height/2];
-    int *store_Matrix_Cr = new int[o_width/2][o_height/2];
+    store_Matrix_Y = new int[o_width*o_height+10];
+    store_Matrix_Cb = new int[o_width*o_height/4+10];
+    store_Matrix_Cr = new int[o_width*o_height/4+10];
+    cout<<"kk"<<endl;
     
     int R,G,B;
     int ydata,cbdata[4],crdata[4];
@@ -172,25 +175,29 @@ void JImage::LoopSubsample(QImage image)
 
                     temp = qRgb(ydata,ydata,ydata);
                     Y.setPixel(i+x,j+y,temp);
-                    store_Matrix_Y[]
+                    store_Matrix_Y[i+x+(j+y)*o_width]=ydata;
                 }
             }
 
             average = Subsample(cbdata);
             temp = qRgb(average,average,average);
             CB.setPixel(floor(i/2),floor(j/2),temp);
+            int index = (int ) floor(i/2)+floor(j/2)*o_width/2;
+            store_Matrix_Cb[index]=average;
             average = Subsample(crdata);
             temp = qRgb(average,average,average);
             CR.setPixel(floor(i/2),floor(j/2),temp);
+            store_Matrix_Cr[index]=average;
         }
     }
 }
 
-void JImage::DCT(QImage image, QImage &target)
+void JImage::DCT(QImage image, QImage &target,int store_matrix[])
 {
     int o_width = image.width();
     int o_height = image.height();
     target = QImage( o_width, o_height, QImage::Format_RGB32);
+    cout<<o_width<<" "<<o_height<<endl;
     
     int value;
     QRgb colortemp;
@@ -206,7 +213,10 @@ void JImage::DCT(QImage image, QImage &target)
             {
                 for(int y=0;y<8;y++)
                 {
-                    f_matrix[8*y+x] = (float) qRed(image.pixel(i+x,j+y));
+                    cout<< i+x+(j+y)*o_width <<endl;
+                    f_matrix[8*y+x] = store_matrix[i+x+(j+y)*o_width];
+
+                    //f_matrix[8*y+x] = qRed(image.pixel(i+x,j+y));
                 }
             }
             Matrix_Multiply(this->DCT_Matrix,f_matrix,first);
@@ -222,6 +232,8 @@ void JImage::DCT(QImage image, QImage &target)
                     value = (int) (final[y*8+x]);
                     colortemp = qRgb(value,value,value);
                     target.setPixel(i+x,j+y,colortemp);
+
+                    store_matrix[i+x+(j+y)*o_width]=value;
                 }
             }
         }
@@ -229,7 +241,7 @@ void JImage::DCT(QImage image, QImage &target)
 }
 
 
-void JImage::Quantize_Y(QImage image, QImage &target)
+void JImage::Quantize_Y(QImage image, QImage &target,int store_matrix[])
 {
     int o_width = image.width();
     int o_height = image.height();
@@ -241,16 +253,17 @@ void JImage::Quantize_Y(QImage image, QImage &target)
     {
         for(int j = 0; j< o_height;j++)
         {
-            value = qRed(image.pixel(i,j));
+            value = store_matrix[i+j*o_width];
             value = value/ Luminance_Quantization_Table[(j%8)*8+(i%8)];
 
             colortemp = qRgb(value,value,value);
             target.setPixel(i,j,colortemp);
+            store_matrix[i+j*o_width]=value;
         }
     }
 }
 
-void JImage::Quantize_CBCR(QImage image, QImage &target)
+void JImage::Quantize_CBCR(QImage image, QImage &target,int store_matrix[])
 {
     int o_width = image.width();
     int o_height = image.height();
@@ -262,15 +275,16 @@ void JImage::Quantize_CBCR(QImage image, QImage &target)
     {
         for(int j = 0; j< o_height;j++)
         {
-            value = qRed(image.pixel(i,j));
+            value = store_matrix[i+j*o_width];
             value = value/ Chrominance_Quantization_Table[(j%8)*8+(i%8)];
             colortemp = qRgb(value,value,value);
             target.setPixel(i,j,colortemp);
+            store_matrix[i+j*o_width] = value;
         }
     }
 }
 
-void JImage::DQuantize_Y(QImage image, QImage &target)
+void JImage::DQuantize_Y(QImage image, QImage &target,int store_matrix[])
 {
     int o_width = image.width();
     int o_height = image.height();
@@ -282,15 +296,16 @@ void JImage::DQuantize_Y(QImage image, QImage &target)
     {
         for(int j = 0; j< o_height;j++)
         {
-            value = qRed(image.pixel(i,j));
+            value = store_matrix[i+j*o_width];
             value = value* Luminance_Quantization_Table[(j%8)*8+(i%8)];
             colortemp = qRgb(value,value,value);
             target.setPixel(i,j,colortemp);
+            store_matrix[i+j*o_width]= value;
         }
     }
 }
 
-void JImage::DQuantize_CBCR(QImage image, QImage &target)
+void JImage::DQuantize_CBCR(QImage image, QImage &target,int store_matrix[])
 {
     int o_width = image.width();
     int o_height = image.height();
@@ -302,15 +317,16 @@ void JImage::DQuantize_CBCR(QImage image, QImage &target)
     {
         for(int j = 0; j< o_height;j++)
         {
-            value = qRed(image.pixel(i,j));
+            value = store_matrix[i+j*o_width];
             value = value* Chrominance_Quantization_Table[(j%8)*8+(i%8)];
             colortemp = qRgb(value,value,value);
             target.setPixel(i,j,colortemp);
+            store_matrix[i+j*o_width] = value;
         }
     }
 }
 
-void JImage::DDCT(QImage image, QImage &target)
+void JImage::DDCT(QImage image, QImage &target,int store_matrix[])
 {
     int o_width = image.width();
     int o_height = image.height();
@@ -330,7 +346,7 @@ void JImage::DDCT(QImage image, QImage &target)
             {
                 for(int y=0;y<8;y++)
                 {
-                    f_matrix[8*y+x] = (float) qRed(image.pixel(i+x,j+y));
+                    f_matrix[8*y+x] = (float) store_matrix[i+x+(j+y)*o_width];
                 }
             }
             Matrix_Multiply(this->DCT_Matrix_Tran,f_matrix,first);
@@ -343,6 +359,7 @@ void JImage::DDCT(QImage image, QImage &target)
                     value = (int) (final[y*8+x]);
                     colortemp = qRgb(value,value,value);
                     target.setPixel(i+x,j+y,colortemp);
+                    store_matrix[i+x+(y+j)*o_width] = value;
                 }
             }
         }
