@@ -44,13 +44,63 @@ void MainWindow::on_submit_btn_clicked()
     ql->setPixmap(QPixmap::fromImage(jimage.decoded));
 }
 
-void MainWindow::on_spinBox_editingFinished()
+void MainWindow::on_constant_clicked()
+{
+    jimage.ChangeConst(true);
+}
+
+void MainWindow::on_quality_editingFinished()
 {
     QSpinBox *qsb=findChild<QSpinBox *>("quality");
     jimage.ChangeQuality(qsb->value());
 }
 
-void MainWindow::on_constant_clicked()
+void MainWindow::on_ycbyr_clicked()
 {
-    jimage.ChangeConst(true);
+    QLabel *ql1=findChild<QLabel *>("Y");
+    ql1->setPixmap(QPixmap::fromImage(jimage.Y));
+    QLabel *ql2=findChild<QLabel *>("U");
+    ql2->setPixmap(QPixmap::fromImage(jimage.CB));
+    QLabel *ql3=findChild<QLabel *>("V");
+    ql3->setPixmap(QPixmap::fromImage(jimage.CR));
+}
+
+void MainWindow::on_dct_clicked()
+{
+    QLabel *ql1=findChild<QLabel *>("Y");
+    ql1->setPixmap(QPixmap::fromImage(jimage.DCT_Y));
+    QLabel *ql2=findChild<QLabel *>("U");
+    ql2->setPixmap(QPixmap::fromImage(jimage.DCT_U));
+    QLabel *ql3=findChild<QLabel *>("V");
+    ql3->setPixmap(QPixmap::fromImage(jimage.DCT_V));
+}
+
+void MainWindow::on_quantization_clicked()
+{
+    QLabel *ql1=findChild<QLabel *>("Y");
+    ql1->setPixmap(QPixmap::fromImage(jimage.Quan_Y));
+    QLabel *ql2=findChild<QLabel *>("U");
+    ql2->setPixmap(QPixmap::fromImage(jimage.Quan_U));
+    QLabel *ql3=findChild<QLabel *>("V");
+    ql3->setPixmap(QPixmap::fromImage(jimage.Quan_V));
+}
+
+void MainWindow::on_dquan_clicked()
+{
+    QLabel *ql1=findChild<QLabel *>("Y");
+    ql1->setPixmap(QPixmap::fromImage(jimage.DQY));
+    QLabel *ql2=findChild<QLabel *>("U");
+    ql2->setPixmap(QPixmap::fromImage(jimage.DQU));
+    QLabel *ql3=findChild<QLabel *>("V");
+    ql3->setPixmap(QPixmap::fromImage(jimage.DQV));
+}
+
+void MainWindow::on_idct_clicked()
+{
+    QLabel *ql1=findChild<QLabel *>("Y");
+    ql1->setPixmap(QPixmap::fromImage(jimage.DDCTY));
+    QLabel *ql2=findChild<QLabel *>("U");
+    ql2->setPixmap(QPixmap::fromImage(jimage.DDCTU));
+    QLabel *ql3=findChild<QLabel *>("V");
+    ql3->setPixmap(QPixmap::fromImage(jimage.DDCTV));
 }

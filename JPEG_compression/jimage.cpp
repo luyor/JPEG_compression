@@ -53,7 +53,6 @@ void JImage::Calculate_DCT_Matrix(float matrix[64])
             matrix[8*i+j] = (i==0) ? 1/sqrt(8) : 0.5*cos((2*j+1)*i*PI/16);
         }
     }
-    cout << matrix[0] << " " << matrix[63] << endl;
 
 }
 
@@ -146,7 +145,6 @@ void JImage::LoopSubsample(QImage image)
     store_Matrix_Y = new int[o_width*o_height+10];
     store_Matrix_Cb = new int[o_width*o_height/4+10];
     store_Matrix_Cr = new int[o_width*o_height/4+10];
-    cout<<"kk"<<endl;
     
     int R,G,B;
     int ydata,cbdata[4],crdata[4];
@@ -197,7 +195,6 @@ void JImage::DCT(QImage image, QImage &target,int store_matrix[])
     int o_width = image.width();
     int o_height = image.height();
     target = QImage( o_width, o_height, QImage::Format_RGB32);
-    cout<<o_width<<" "<<o_height<<endl;
     
     int value;
     QRgb colortemp;
@@ -213,7 +210,6 @@ void JImage::DCT(QImage image, QImage &target,int store_matrix[])
             {
                 for(int y=0;y<8;y++)
                 {
-                    cout<< i+x+(j+y)*o_width <<endl;
                     f_matrix[8*y+x] = store_matrix[i+x+(j+y)*o_width];
 
                     //f_matrix[8*y+x] = qRed(image.pixel(i+x,j+y));

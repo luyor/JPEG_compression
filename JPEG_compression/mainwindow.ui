@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>783</width>
-    <height>689</height>
+    <width>809</width>
+    <height>690</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <rect>
       <x>40</x>
       <y>20</y>
-      <width>702</width>
+      <width>741</width>
       <height>631</height>
      </rect>
     </property>
@@ -190,6 +190,9 @@
           <property name="text">
            <string/>
           </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
        </layout>
@@ -292,7 +295,7 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
-            <widget class="QLabel" name="Cr">
+            <widget class="QLabel" name="V">
              <property name="enabled">
               <bool>true</bool>
              </property>
@@ -329,7 +332,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="Cb">
+            <widget class="QLabel" name="U">
              <property name="enabled">
               <bool>true</bool>
              </property>
