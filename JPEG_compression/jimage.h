@@ -17,8 +17,8 @@ public:
     void UpdateImage();
     
 
-    QImage origin;
-    QImage Y,CB,CR;
+    QImage origin;                             //read the origin image
+    QImage Y,CB,CR;                            //Y,Cb,Cr value use gray image to show and also other steps' values
     QImage DCT_Y,DCT_U,DCT_V;
     QImage Quan_Y,Quan_U,Quan_V;
     QImage DQY,DQU,DQV;
@@ -26,12 +26,12 @@ public:
     QImage decoded;
     
 private:
-    int quality;
-    bool constant;
-    bool flag;
-    float *DCT_Matrix;
-    float *DCT_Matrix_Tran;
-    int *store_Matrix_Y;
+    int quality;                                //store the choose quality to compress
+    bool constant;                              //to determine which kind of quantizaiton is
+    bool flag;                                  //whether this image is the first time to load
+    float *DCT_Matrix;                          // T matrix
+    float *DCT_Matrix_Tran;                     //Transpose T matrix
+    int *store_Matrix_Y;                        // three array to store the value for transfer
     int *store_Matrix_Cb;
     int *store_Matrix_Cr;
     
